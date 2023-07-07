@@ -29,3 +29,7 @@ Now that I think about it... I haven't run npm install yet.
 ```shell
 npm install
 ```
+
+## Chapter 3 - Some pages for Laravel
+
+Let's add a register feature, a login feature and a user details page.
