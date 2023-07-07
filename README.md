@@ -17,3 +17,15 @@ You have a Laravel application. That's all. Prologue finished.
 You guessed it: let's start a database using docker. I'm using a docker-compose.yaml file for this in order to easily point towards my env variables.
 
 The docker-compose file is going to store the db data in the repo, let's add the folder to the .gitignore file.
+
+## Chapter 2 - Tailwind CSS
+
+I'm growing to like Tailwind CSS a lot.
+
+[Here](https://tailwindcss.com/docs/guides/laravel)'s how you can use it in a Laravel application.
+
+Now that I think about it... I haven't run npm install yet.
+
+```shell
+npm install
+```
