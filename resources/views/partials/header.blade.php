@@ -4,14 +4,15 @@
             $user = \Illuminate\Support\Facades\Auth::getUser();
         @endphp
         <form action="{{route('user.logout.action')}}" method="post">
-            <a href="/">Home</a>
-            <a href="{{route('user.details.page')}}">{{$user->email}}</a>
+            | <a href="/">Home</a>
+            | <a href="{{route('user.details.page')}}">{{$user->email}}</a>
+            | <a href="{{route('inertia.page')}}">Inertia page</a>
             @csrf
-            <button style="padding: 0!important" type="submit">Logout</button>
+            | <button style="padding: 0!important" type="submit">Logout</button> |
         </form>
     @else
-        <a href="/">Home</a>
-        <a href="{{route('login.page')}}">Login</a>
-        <a href="{{route('register.page')}}">Register</a>
+        | <a href="/">Home</a>
+        | <a href="{{route('login.page')}}">Login</a>
+        | <a href="{{route('register.page')}}">Register</a> |
     @endif
 </div>

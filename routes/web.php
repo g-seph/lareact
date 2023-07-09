@@ -31,3 +31,17 @@ Route::controller(\App\Http\Controllers\UserController::class)->group(function (
     Route::get('/user-details', 'userDetails')->name('user.details.page');
     Route::post('/logout', 'logout')->name('user.logout.action');
 });
+
+Route::get('/inertia', function() {
+    $user = \Illuminate\Support\Facades\Auth::user();
+    if (is_null($user))
+            return redirect()->route('home.page')->with(
+                [
+                    'errors' => new \Illuminate\Support\Collection(['Must be logged in'])
+                ]
+            );
+    return \Inertia\Inertia::render('Inertia/ReactComponent', [
+        'message' => "Hello from React",
+        'user' => $user
+    ]);
+})->name('inertia.page');

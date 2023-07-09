@@ -36,7 +36,7 @@ Let's add a register feature, a login feature and a user details page.
 
 ## Chapter 4 - Inertia && React installation
 
-I can't suggest enough [this video](https://www.youtube.com/watch?v=Yp4SifzmRu4) (which I already linked before). It shows the process applied with Vue3, but most of the principles are valid for React too.
+I can't suggest [this video](https://www.youtube.com/watch?v=Yp4SifzmRu4) enough (a video I already linked before). It shows the process applied with Vue3, but most of the principles are valid for React too.
 
 Dependency installation
 
@@ -114,3 +114,44 @@ createInertiaApp({
 ```
 
 Now we are resolving paths such as resources/js/Pages/... for our Reacts components.
+
+## Chapter 5 - A simple Inertia rendered page
+
+Now let's build a page using React. This is going to be a simple feature: a page that displays the user's name and has a simple message.
+
+In resources/js/Pages/Inertia/ReactComponent.jsx
+
+```jsx
+import {Head} from '@inertiajs/react';
+
+export default function ReactComponent({message, user}) {
+    console.log("HELLO");
+    return (
+        <>
+            <Head title="Welcome"/>
+            <h1>Welcome</h1>
+            <p>Hello {user?.name}, welcome to your first Inertia app!</p>
+        </>
+    )
+}
+```
+
+In routes/web.php we add this route
+
+```php
+Route::get('/inertia', function() {
+    $user = \Illuminate\Support\Facades\Auth::user();
+    if (is_null($user))
+            return redirect()->route('home.page')->with(
+                [
+                    'errors' => new \Illuminate\Support\Collection(['Must be logged in'])
+                ]
+            );
+    return \Inertia\Inertia::render('Inertia/ReactComponent', [
+        'message' => "Hello from React",
+        'user' => $user
+    ]);
+})->name('inertia.page');
+```
+
+As we can see, with the Inertia::render helper method we can render a React component in the specified path (resources/js/Pages) and pass props.
