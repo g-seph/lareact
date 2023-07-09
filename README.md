@@ -33,3 +33,84 @@ npm install
 ## Chapter 3 - Some pages for Laravel
 
 Let's add a register feature, a login feature and a user details page.
+
+## Chapter 4 - Inertia && React installation
+
+I can't suggest enough [this video](https://www.youtube.com/watch?v=Yp4SifzmRu4) (which I already linked before). It shows the process applied with Vue3, but most of the principles are valid for React too.
+
+Dependency installation
+
+```shell
+npm install --save-dev @vitejs/plugin-react
+npm install react react-dom
+npm install @inertiajs/react
+composer require inertiajs/inertia-laravel
+```
+
+Include the React plugin in the vite.config.js file as per [Laravel documentation](https://laravel.com/docs/10.x/vite#react).
+
+```js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react'; //this line
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true, //this line
+        }),
+        react()
+    ],
+});
+```
+
+Create a root template in resources/views named app.blade.php using the @vite helper to load css and js.
+
+Now let's generate the Inertia middleware and let's include it in the app/Http/Kernel.php file. It's important that the newly generated middleware is placed as the last item in the $middlewareGroups['web'] array.
+
+```shell
+php artisan inertia:middleware
+```
+
+```php
+    // ...
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\HandleInertiaRequests::class, // <- this line
+        ],
+
+        'api' => [
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+    ];
+    //...
+```
+
+Now let's initialize Inertia.
+
+I don't like deleting the app.js file in favour of the app.jsx file used for React, so let's add it.
+
+[Laravel's docs](https://laravel.com/docs/10.x/vite#inertia) are helpful once again, even tho we are using React and not Vue, so we got to edit something.
+
+```jsx
+import { createInertiaApp } from '@inertiajs/react'
+import { createRoot } from 'react-dom/client'
+import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
+
+createInertiaApp({
+    resolve: name => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
+    setup({ el, App, props }) {
+        createRoot(el).render(<App {...props} />)
+    },
+})
+```
+
+Now we are resolving paths such as resources/js/Pages/... for our Reacts components.
