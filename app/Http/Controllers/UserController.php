@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -30,7 +31,7 @@ class UserController extends Controller
             'password' => $request->input('password'),
         ]);
         if ($authenticated) {
-            return redirect()->route('home');
+            return redirect()->route('home.page');
         }
         return redirect()->back();
     }
@@ -59,11 +60,17 @@ class UserController extends Controller
     }
 
     public function userDetails() {
+        if (!Auth::check())
+            return redirect()->route('home.page')->with(
+                [
+                    'errors' => new Collection(['Must be logged in'])
+                ]
+            );
         return view('user.details');
     }
 
     public function logout() {
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('home.page');
     }
 }

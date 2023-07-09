@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-})->name('home');
+})->name('home.page');
 
 Route::controller(\App\Http\Controllers\UserController::class)->group(function () {
     Route::get('/login', 'loginPage')->name('login.page');
